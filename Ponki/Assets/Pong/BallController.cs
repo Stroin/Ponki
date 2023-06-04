@@ -7,11 +7,13 @@ public class BallController : MonoBehaviour
     [SerializeField] private float BallSpeed = 5f;
 
     public Rigidbody2D rb2D;
+    public Vector3 vel;
 
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
         rb2D.velocity = GenerateRandomVelocity(true) * BallSpeed;
+        vel = rb2D.velocity;
     }
 
     private Vector3 GenerateRandomVelocity(bool shouldReturnNormalize)
@@ -27,9 +29,13 @@ public class BallController : MonoBehaviour
 
         return velocity;
     }
-    
 
-    
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        rb2D.velocity = Vector3.Reflect(vel, collision.contacts[0].normal);
+        vel = rb2D.velocity;
+    }
+
 
     void Update()
     {

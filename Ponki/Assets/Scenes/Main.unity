@@ -646,6 +646,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kaleidoscope_2
       objectReference: {fileID: 0}
+    - target: {fileID: 8273340313342943061, guid: 88855328ecfa247c1be349ace111f0ce, type: 3}
+      propertyPath: SubModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8273340313342943062, guid: 88855328ecfa247c1be349ace111f0ce, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -736,8 +740,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cdfdc4ac05224241af43a34f6175bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BallSpeed: 5
+  BallSpeed: 7
   rb2D: {fileID: 0}
+  vel: {x: 0, y: 0, z: 0}
 --- !u!50 &1779354311
 Rigidbody2D:
   serializedVersion: 4
