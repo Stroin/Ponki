@@ -8,19 +8,35 @@ public class BallController : MonoBehaviour
 
     public Rigidbody2D rb2D;
     public Vector3 vel;
+    public bool isPlaying;
 
+    private void ResetAndSendBallInRandomDirection()
+    {
+        ResetBall();
+        rb2D.velocity = GenerateRandomVelocity(true) * BallSpeed;
+        vel = rb2D.velocity;
+        isPlaying = true;
+    }
+
+    private void ResetBall()
+    {
+        rb2D.velocity = Vector3.zero;
+        transform.position = Vector3.zero;
+        isPlaying = false;
+
+    }
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
-        rb2D.velocity = GenerateRandomVelocity(true) * BallSpeed;
-        vel = rb2D.velocity;
+        
     }
 
     private Vector3 GenerateRandomVelocity(bool shouldReturnNormalize)
     {
         Vector3 velocity = new Vector3();
-        velocity.x = Random.Range(-1f, 1f);
-        velocity.y = Random.Range(-1f, 1f);
+        bool shouldGoRight = Random.Range(1, 100) > 50;
+        velocity.x = shouldGoRight ? Random.Range(.8f, .3f) : Random.Range(-.8f, -.3f);
+        velocity.y = shouldGoRight ? Random.Range(.8f, .3f) : Random.Range(-.8f, -.3f);
 
         if (shouldReturnNormalize)
         {
@@ -33,12 +49,34 @@ public class BallController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         rb2D.velocity = Vector3.Reflect(vel, collision.contacts[0].normal);
+        Vector3 newVelocityWithOffset = rb2D.velocity;
+        newVelocityWithOffset += new Vector3(Random.Range(-.5f, .5f), Random.Range(-.5f, .5f));
+        rb2D.velocity = newVelocityWithOffset.normalized * BallSpeed;
         vel = rb2D.velocity;
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (transform.position.x > 0)
+            print("left Player +1");
 
+        if (transform.position.x < 0)
+            print("right Player +1");
+
+        ResetAndSendBallInRandomDirection();
+    }
     void Update()
     {
-    
+        if (Input.GetKeyUp(KeyCode.Space) && isPlaying == false)
+        {
+            ResetAndSendBallInRandomDirection();
+
+        }
+
+        if (rb2D.velocity.magnitude < BallSpeed * 0.5f)
+            ResetBall();
+
+     
+            
     }
 }
