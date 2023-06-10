@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -28,8 +29,13 @@ public class PlayerController : MonoBehaviour
         {
             transform.position += Vector3.down * Time.deltaTime * PlayerSpeed;
         }
-
-        
-    }
-    
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Scene scene = SceneManager.GetActiveScene(); SceneManager.LoadScene(scene.name);
+        }
+    }    
 }

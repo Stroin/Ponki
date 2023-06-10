@@ -5,10 +5,14 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     [SerializeField] private float BallSpeed = 5f;
+    [SerializeField] private AudioSource hitSoundEffect;
+    [SerializeField] private AudioSource golSoundEffect;
 
     public Rigidbody2D rb2D;
     public Vector3 vel;
     public bool isPlaying;
+    public ScoreManager scoreManager;
+
 
     private void ResetAndSendBallInRandomDirection()
     {
@@ -18,7 +22,7 @@ public class BallController : MonoBehaviour
         isPlaying = true;
     }
 
-    private void ResetBall()
+    public void ResetBall()
     {
         rb2D.velocity = Vector3.zero;
         transform.position = Vector3.zero;
@@ -28,6 +32,8 @@ public class BallController : MonoBehaviour
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
+
+        ResetBall();
         
     }
 
@@ -53,6 +59,7 @@ public class BallController : MonoBehaviour
         newVelocityWithOffset += new Vector3(Random.Range(-.5f, .5f), Random.Range(-.5f, .5f));
         rb2D.velocity = newVelocityWithOffset.normalized * BallSpeed;
         vel = rb2D.velocity;
+        hitSoundEffect.Play();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -64,19 +71,37 @@ public class BallController : MonoBehaviour
             print("right Player +1");
 
         ResetAndSendBallInRandomDirection();
+
+        if(collision.gameObject.name == "BorderRight")
+        {
+            
+            scoreManager.PlayerLeftScore();
+            golSoundEffect.Play();
+        }
+        if(collision.gameObject.name == "BorderLeft")
+        {
+            scoreManager.PlayerRightScore();
+            golSoundEffect.Play();
+        }
     }
     void Update()
     {
         if (Input.GetKeyUp(KeyCode.Space) && isPlaying == false)
         {
             ResetAndSendBallInRandomDirection();
-
         }
 
         if (rb2D.velocity.magnitude < BallSpeed * 0.5f)
             ResetBall();
-
-     
-            
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetAndSendBallInRandomDirection();
+        }
     }
+    public void AddForce(Vector2 force)
+        {
+            rb2D.AddForce(force);
+        }
+            
+    
 }
